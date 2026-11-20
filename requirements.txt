@@ -1,4 +1,5 @@
 requests
-pickledb
+pickledb>=1.0
 pyzk
-PyQt5
+# PyQt5 is only needed for the optional GUI. Install separately if desired: pip install PyQt5
+# Core sync tool does not require PyQt5.
