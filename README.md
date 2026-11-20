@@ -11,6 +11,7 @@ Python Scripts to poll your biometric attendance system _(BAS)_ for logs and syn
 - **Autosync based on last Employee Checkin**: Instead of relying solely on local success logs to determine the starting point for synchronization, this version queries the ERPNext `Employee Checkin` DocType for the most recent checkin associated with the device_id. It then syncs only punches newer than that timestamp. This makes recovery more robust (e.g., after log file loss or server changes) and reduces reliance on local state.
 - Compatible with the `hrms` app endpoint used in Frappe HR v14+.
 - Default `ERPNEXT_VERSION` set to 14.
+- **Updated for modern Python**: Works on Python 3.10+ including the latest stable release (Python 3.15 as of late 2026). No longer requires ancient Python 3.6.
 
 ## Table of Contents
  - [Pre-requisites](#pre-requisites)
@@ -25,13 +26,15 @@ Python Scripts to poll your biometric attendance system _(BAS)_ for logs and syn
   - [License](#license)
 
 ## Pre-requisites
-* Python 3.6+
+* **Python 3.10 or newer** (recommended: latest stable, currently Python 3.15)
+  - Download from https://www.python.org/downloads/
+  - On Windows, check "Add python.exe to PATH" during install.
 
 ## Usage
-There's two ways you can use this tool. If accessing the CLI is a bit of a pain for you, the GUI has a simple form to guide you through the process.
+There's two ways you can use this tool. If accessing the CLI is a bit of a pain for you, the GUI has a simple form to guide you through the process (optional).
 
 ### GUI
-Run the `install.py` or build the executable as described below.
+Run the `install.py` or build the executable as described below. (Requires PyQt5)
 
 ### CLI
 The `erpnext_sync.py` file is the "backbone" of this project. Apart from Windows _(which has its own wrapper `erpnext_sync_win.py`)_, this file can be directly used to set up the sync tool.
@@ -41,15 +44,16 @@ The `erpnext_sync.py` file is the "backbone" of this project. Apart from Windows
 1. Setup dependencies
     ```
     cd biometric-attendance-sync-tool-erpnext-v14
-      && python3 -m venv venv
-      && source venv/bin/activate
+      && python -m venv venv
+      && source venv/bin/activate          # Linux/macOS
+      # OR: venv\Scripts\activate.bat      # Windows
       && pip install -r requirements.txt
     ```
 2. Setup `local_config.py`
 
    Make a copy of and rename `local_config.py.template` file. [Learn More](#setting-up-config)
 
-3. Run this script using `python3 erpnext_sync.py` (it will loop infinitely, pulling at the configured frequency)
+3. Run this script using `python erpnext_sync.py` (it will loop infinitely, pulling at the configured frequency)
 
 ### UNIX
 
@@ -72,6 +76,8 @@ Installing as a Windows service
 
 #### To see the status of the service
     mmc Services.msc
+
+**Auto-start on boot (recommended):** See the BAT file + Task Scheduler instructions in the conversation history or create a scheduled task that runs `python erpnext_sync.py` from the activated venv.
 
 
 ## Setting up config
@@ -98,10 +104,10 @@ Installing as a Windows service
 ## To build executable file for GUI
 ### Linux and Windows:
 1. Activate virtual environment.
-1. Navigate to the repository folder (where `gui.py` located)
+1. Navigate to the repository folder
 1. Run the following commands:
     ```
-    pip install pyinstaller
+    pip install pyinstaller PyQt5
     ```
 
     ```
